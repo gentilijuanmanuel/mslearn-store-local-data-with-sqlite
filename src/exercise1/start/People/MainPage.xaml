@@ -5,7 +5,6 @@
     Padding="0,20"
     xmlns:ios="clr-namespace:Xamarin.Forms.PlatformConfiguration.iOSSpecific;assembly=Xamarin.Forms.Core" 
     ios:Page.UseSafeArea="true">
-    
     <Grid
         Padding="5"
         RowSpacing="1"
