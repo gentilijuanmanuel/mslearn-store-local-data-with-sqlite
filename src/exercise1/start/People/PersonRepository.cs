@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using People.Models;
 using SQLite;
 
@@ -9,15 +10,15 @@ namespace People
     {
         public string StatusMessage { get; set; }
 
-        private SQLiteConnection Connection { get; set; }
+        private SQLiteAsyncConnection Connection { get; set; }
 
         public PersonRepository(string dbPath)
         {
-            Connection = new SQLiteConnection(dbPath);
-            Connection.CreateTable<Person>();
+            Connection = new SQLiteAsyncConnection(dbPath);
+            Connection.CreateTableAsync<Person>().Wait();
         }
 
-        public void AddNewPerson(string name)
+        public async Task AddNewPerson(string name)
         {
             int result = 0;
             try
@@ -25,7 +26,7 @@ namespace People
                 if (string.IsNullOrEmpty(name))
                     throw new Exception("Valid name required");
 
-                result = Connection.Insert(new Person { Name = name });
+                result = await Connection.InsertAsync(new Person { Name = name });
 
                 this.StatusMessage = string.Format("{0} record(s) added [Name: {1}]", result, name);
             }
@@ -35,11 +36,11 @@ namespace People
             }
         }
 
-        public List<Person> GetAllPeople()
+        public async Task<List<Person>> GetAllPeople()
         {
             try
             {
-                return Connection.Table<Person>().ToList();
+                return await Connection.Table<Person>().ToListAsync();
             }
             catch (Exception ex)
             {
